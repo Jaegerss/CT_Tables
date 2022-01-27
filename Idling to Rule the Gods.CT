@@ -1,0 +1,1861 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="38">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>0</ID>
+      <Description>"enable Mono"</Description>
+      <Options moHideChildren="1"/>
+      <LastState Activated="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if process and readInteger(process) ~= 0 then
+    mono_initialize()
+    LaunchMonoDataCollector()
+else
+    local msg = 'No process detected.'
+    print(msg)
+    error(msg)
+end
+{$asm}
+[DISABLE]
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>18</ID>
+          <Description>"unlimited lucky draws"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Premium', 'UseLuckyDraw')
+    mono_compile_method(mId)
+    mId = mono_findMethod('Assembly-CSharp', 'CDouble', 'op_Decrement')
+    mono_compile_method(mId)
+    mId = mono_findMethod('Assembly-CSharp', 'CDouble', 'op_Increment')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Premium:UseLuckyDraw+AB, 85 C0 74 0A)
+assert(Premium:UseLuckyDraw+16D, 75 0A)
+assert(Premium:UseLuckyDraw+1A9, 74 0A)
+assert(Premium:UseLuckyDraw+1DC, 8B 40 18 83 EC 0C 50)
+assert(Premium:UseLuckyDraw+4EE, 6A 02)
+
+
+label(skipChallengeCheck)
+Premium:UseLuckyDraw+179:
+skipChallengeCheck:
+
+Premium:UseLuckyDraw+AB:
+  jmp skipChallengeCheck
+  nop
+
+Premium:UseLuckyDraw+16D:
+  db EB 0A
+Premium:UseLuckyDraw+1A9:
+  db EB 0A
+
+// skip increment of used draws
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+originalcode:
+mov eax,[eax+18]
+sub esp,0C
+push eax
+
+exit:
+jmp returnhere+6
+
+Premium:UseLuckyDraw+1dc:
+jmp newmem
+nop
+returnhere:
+
+
+Premium:UseLuckyDraw+4EE:
+  db 6A 7F
+
+[DISABLE]
+dealloc(newmem)
+Premium:UseLuckyDraw+AB:
+  db 85 C0 74 0A
+Premium:UseLuckyDraw+CF:
+  db 3D 0D000000
+Premium:UseLuckyDraw+16D:
+  db 75 0A
+Premium:UseLuckyDraw+1A9:
+  db 74 0A
+Premium:UseLuckyDraw+1DC:
+  db 8B 40 18 83 EC 0C 50
+Premium:UseLuckyDraw+4EE:
+  db 6A 02
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>1</ID>
+          <Description>"modify lucky draw results"</Description>
+          <Options moHideChildren="1"/>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'LuckyDraw', 'PossibleDraws')
+    mono_compile_method(mId)
+end
+
+[DISABLE]
+</AssemblerScript>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>3</ID>
+              <Description>"100 Crystal Power"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+7C, 68 82000000 6A 03 50)
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+7C:
+push #9999
+push 1E
+push eax
+
+
+
+[DISABLE]
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+7C:
+push #130
+push 03
+push eax
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>19</ID>
+              <Description>"God Power (100*bonus)"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+F1, 6A 01 6A 09 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 09
+push eax
+jmp exit
+
+originalcode:
+push 01
+push 09
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+F1:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+F1:
+  db 6A 01 6A 09 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>4</ID>
+              <Description>"Godly Liquid V2"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+117, 6A 04 6A 0B 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 0B
+push eax
+jmp exit
+
+originalcode:
+push 04
+push 0B
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+117:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+117:
+  db 6A 04 6A 0B 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>8</ID>
+              <Description>"Chakra Pill V2"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+13d, 6A 04 6A 0D 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 0D
+push eax
+jmp exit
+
+originalcode:
+push 04
+push 0D
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+13d:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+13d:
+  db 6A 04 6A 0D 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>9</ID>
+              <Description>"Pet Stones"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+150, 6A 02 6A 02 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 02
+push eax
+jmp exit
+
+originalcode:
+push 02
+push 02
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+150:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+150:
+  db 6A 02 6A 02 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>7</ID>
+              <Description>"Lucky Draws"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+163, 6A 0A 6A 0E 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 0E
+push eax
+jmp exit
+
+originalcode:
+push 0A
+push 0E
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+163:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+163:
+  db 6A 0A 6A 0E 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>10</ID>
+              <Description>"Ultimate Shadow Summon"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+176, 6A 06 6A 01 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 01
+push eax
+jmp exit
+
+originalcode:
+push 06
+push 01
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+176:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+176:
+  db 6A 06 6A 01 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>11</ID>
+              <Description>"Crystal Slot"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+189, 6A 01 6A 1D 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 1D
+push eax
+jmp exit
+
+originalcode:
+push 01
+push 1D
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+189:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+189:
+  db 6A 01 6A 1D 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>6</ID>
+              <Description>"Four power stats doubled until rebirth"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+19C, 6A 04 6A 0F 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 0F
+push eax
+jmp exit
+
+originalcode:
+push 04
+push 0F
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+19C:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+19C:
+  db 6A 04 6A 0F 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>5</ID>
+              <Description>"Double Divinity"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+1FB, 6A 0F 6A 14 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 14
+push eax
+jmp exit
+
+originalcode:
+push 0F
+push 14
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+1FB:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+1FB:
+  db 6A 0F 6A 14 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>12</ID>
+              <Description>"Pet Growth 5"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+25A, 6A 05 6A 19 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 19
+push eax
+jmp exit
+
+originalcode:
+push 05
+push 19
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+25A:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+25A:
+  db 6A 05 6A 19 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>13</ID>
+              <Description>"15 Chocolate"</Description>
+              <LastState/>
+              <VariableType>Auto Assembler Script</VariableType>
+              <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+293, 6A 05 6A 1C 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 1C
+push eax
+jmp exit
+
+originalcode:
+push 05
+push 1C
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+293:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+293:
+  db 6A 05 6A 1C 50
+dealloc(newmem)
+</AssemblerScript>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>17</ID>
+              <Description>"Only works if you have a pet"</Description>
+              <Options moManualExpandCollapse="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>14</ID>
+                  <Description>"T1 dungeon materials * 20"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+30E, 6A 32 6A 1F 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 1F
+push eax
+jmp exit
+
+originalcode:
+push 32
+push 1F
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+30E:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+30E:
+  db 6A 32 6A 1F 50
+dealloc(newmem)
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>16</ID>
+                  <Description>"T2 dungeon materials * 5"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+321, 6A 14 6A 20 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 20
+push eax
+jmp exit
+
+originalcode:
+push 14
+push 20
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+321:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+321:
+  db 6A 14 6A 20 50
+dealloc(newmem)
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>15</ID>
+                  <Description>"T3 dungeon materials * 2"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+assert(LuckyDraw:PossibleDraws+334, 6A 05 6A 21 50)
+
+alloc(newmem,2048)
+label(returnhere)
+label(originalcode)
+label(exit)
+
+newmem:
+push #9999
+push 21
+push eax
+jmp exit
+
+originalcode:
+push 05
+push 21
+push eax
+
+exit:
+jmp returnhere
+
+Assets.Scripts.Data:LuckyDraw:PossibleDraws+334:
+jmp newmem
+returnhere:
+
+
+
+[DISABLE]
+LuckyDraw:PossibleDraws+334:
+  db 6A 05 6A 21 50
+dealloc(newmem)
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>20</ID>
+          <Description>"creation speed boost"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'GameState', 'CreationSpeed')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(GameState:CreationSpeed+36, 7C 31)
+assert(GameState:CreationSpeed+46, 76 21 6A 00 6A 03)
+assert(GameState:CreationSpeed+142, 85 C0 74 21 6A 00 6A 04)
+
+GameState:CreationSpeed+36:
+  db 90 90
+GameState:CreationSpeed+46:
+  db 90 90 6A 00 6A 7F
+GameState:CreationSpeed+142:
+  push 00
+  push 1FFFFFFF
+  db 90
+
+[DISABLE]
+GameState:CreationSpeed+36:
+  db 7C 31
+GameState:CreationSpeed+46:
+  db 76 21 6A 00 6A 03
+GameState:CreationSpeed+142:
+  db 85 C0 74 21 6A 00 6A 04
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>21</ID>
+          <Description>"HP recovery boost"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'GameState', 'RecoverHealth')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(GameState:RecoverHealth+18, 3D 1E 00 00 00)
+assert(GameState:RecoverHealth+66, 68 80 84 1E 00)
+assert(GameState:RecoverHealth+11E, 6A 64)
+assert(GameState:RecoverHealth+168, 6A 64)
+//assert(GameState:RecoverHealth+1B3, 6A 21)
+
+
+GameState:RecoverHealth+18:
+  cmp eax,00
+  nop
+  nop
+GameState:RecoverHealth+66:
+  push 01
+  nop
+  nop
+  nop
+GameState:RecoverHealth+11E:
+  db 6A 01
+GameState:RecoverHealth+168:
+  db 6A 01
+//GameState:RecoverHealth+1B3:
+//  db 6A 7F
+
+[DISABLE]
+GameState:RecoverHealth+18:
+  db 3D 1E 00 00 00
+GameState:RecoverHealth+66:
+  db 68 80 84 1E 00
+GameState:RecoverHealth+11E:
+  db 6A 64
+GameState:RecoverHealth+168:
+  db 6A 64
+//GameState:RecoverHealth+1B3:
+//  db 6A 21
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>24</ID>
+          <Description>"training boost"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'TrainingBase', 'get_PowerGain')
+    mono_compile_method(mId)
+end
+{$asm}
+label(jmphere)
+assert(TrainingBase:get_PowerGain+83, FF E0 83 EC 0C)
+assert(TrainingBase:get_PowerGain+29B, 83 EC 0C)
+assert(TrainingBase:get_PowerGain+29E, 68 84 8B 00 00)
+
+TrainingBase:get_PowerGain+83:
+  jmp jmphere
+TrainingBase:get_PowerGain+29B:
+jmphere:
+TrainingBase:get_PowerGain+29E:
+  push 1FFFFFFF
+
+[DISABLE]
+TrainingBase:get_PowerGain+83:
+  db FF E0 83 EC 0C
+TrainingBase:get_PowerGain+29E:
+  db 68 84 8B 00 00
+
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>26</ID>
+          <Description>"no avatar point costs"</Description>
+          <LastState/>
+          <VariableType>Auto Assembler Script</VariableType>
+          <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'HeroImage', 'ShowDialog')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(HeroImage:ShowDialog+120C, 83 EC 08)
+
+HeroImage:ShowDialog+120C:
+  db EB 0B 90
+
+[DISABLE]
+HeroImage:ShowDialog+120C:
+  db 83 EC 08
+</AssemblerScript>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>37</ID>
+          <Description>"Build"</Description>
+          <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+          <LastState Value="" RealAddress="00000000"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>38</ID>
+              <Description>"Creation"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>39</ID>
+                  <Description>"zero buy cost"</Description>
+                  <LastState Activated="1"/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Creation', 'get_BuyCost')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Creation:get_BuyCost+1A, 8B 7F 28 83 FF 1D)
+alloc(newmem,$1000)
+
+label(return)
+
+newmem:
+  mov edi,00
+  cmp edi,1D
+  jmp return
+
+Creation:get_BuyCost+1A:
+  jmp newmem
+  nop
+return:
+
+[DISABLE]
+Creation:get_BuyCost+1A:
+  db 8B 7F 28 83 FF 1D
+
+dealloc(newmem)
+
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>30</ID>
+              <Description>"Monuments"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>28</ID>
+                  <Description>"no creation costs for monuments"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Monument', 'RequiredCreations')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Monument:RequiredCreations+7f, 0F 83 1F 08 00 00)
+label(jmphere)
+
+Monument:RequiredCreations+7f:
+  jmp jmphere
+  nop
+Monument:RequiredCreations+8a4:
+jmphere:
+
+[DISABLE]
+Monument:RequiredCreations+7f:
+  db 0F 83 1F 08 00 00
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>29</ID>
+                  <Description>"instant monument creation (only 1 clone needed)"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Monument', 'DurationInMS')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Monument:DurationInMS+93, 83 7D 0C 00 75 0B)
+assert(MonumentUpgrade:DurationInMS+74, 40 3D FF FF FF FF)
+alloc(newmem,$1000)
+alloc(newmem2,$1000)
+
+label(code)
+label(return)
+label(jmphere)
+label(return2)
+
+newmem:
+  mov [ebp-10],1
+  mov [ebp-0C],0
+code:
+  cmp dword ptr [ebp+0C],00
+  jne jmphere
+  jmp return
+
+Monument:DurationInMS+93:
+  jmp newmem
+return:
+
+Monument:DurationInMS+34:
+jmphere:
+
+newmem2:
+  mov eax,1
+  cmp eax,FFFFFFFF
+  jmp return2
+
+MonumentUpgrade:DurationInMS+74:
+  jmp newmem2
+  nop
+return2:
+
+[DISABLE]
+Monument:DurationInMS+93:
+  db 83 7D 0C 00 75 0B
+MonumentUpgrade:DurationInMS+74:
+  db 40 3D FF FF FF FF
+
+dealloc(newmem)
+dealloc(newmem2)
+
+//39 to 34
+//B8 to 93
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>32</ID>
+                  <Description>"instant monument upgrade creation (only 1 clone needed)"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'MonumentUpgrade', 'DurationInMS')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(MonumentUpgrade:DurationInMS+23, 83 7D 0C 00 75 0B)
+assert(MonumentUpgrade:DurationInMS+74, 40 3D FF FF FF FF)
+alloc(newmem,$1000)
+alloc(newmem2,$1000)
+
+label(code)
+label(return)
+label(jmphere)
+label(return2)
+
+newmem:
+  mov [ebp-10],1
+  mov [ebp-0C],0
+code:
+  cmp dword ptr [ebp+0C],00
+  jne jmphere
+  jmp return
+
+MonumentUpgrade:DurationInMS+23:
+  jmp newmem
+return:
+
+MonumentUpgrade:DurationInMS+96:
+jmphere:
+
+newmem2:
+  mov eax,1
+  cmp eax,FFFFFFFF
+  jmp return2
+
+MonumentUpgrade:DurationInMS+74:
+  jmp newmem2
+  nop
+return2:
+
+[DISABLE]
+MonumentUpgrade:DurationInMS+23:
+  db 83 7D 0C 00 75 0B
+MonumentUpgrade:DurationInMS+74:
+  db 40 3D FF FF FF FF
+
+dealloc(newmem)
+dealloc(newmem2)
+
+
+// Moved A5 to 23
+// Moved ED to 74
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>60</ID>
+                  <Description>"raised maximum rebirth multi cap"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'MonumentUpgrade', 'get_MaxRebirthMulti')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(MonumentUpgrade:get_MaxRebirthMulti+14, 6A 05)
+assert(MonumentUpgrade:get_MaxRebirthMulti+45, 05 04 00 00 00)
+assert(MonumentUpgrade:get_MaxRebirthMulti+9B, 6A 64)
+assert(MonumentUpgrade:get_MaxRebirthMulti+C4, 6A 04)
+assert(MonumentUpgrade:get_MaxRebirthMulti+105, 6A 64)
+
+MonumentUpgrade:get_MaxRebirthMulti+14:
+  db 6A 7F
+MonumentUpgrade:get_MaxRebirthMulti+45:
+  db 05 FF FF FF 6F
+MonumentUpgrade:get_MaxRebirthMulti+9B:
+  db 6A 7F
+MonumentUpgrade:get_MaxRebirthMulti+C4:
+  db 6A 7F
+MonumentUpgrade:get_MaxRebirthMulti+105:
+  db 6A 01
+
+[DISABLE]
+MonumentUpgrade:get_MaxRebirthMulti+14:
+  db 6A 05
+MonumentUpgrade:get_MaxRebirthMulti+45:
+  db 05 04 00 00 00
+MonumentUpgrade:get_MaxRebirthMulti+9B:
+  db 6A 64
+MonumentUpgrade:get_MaxRebirthMulti+C4:
+  db 6A 04
+MonumentUpgrade:get_MaxRebirthMulti+105:
+  db 6A 64
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>61</ID>
+                  <Description>"ignore rebirth multi cap"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'MonumentUpgrade', 'get_UpgradeRebirthMulti')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(MonumentUpgrade:get_UpgradeRebirthMulti+13, 6A 04)
+assert(MonumentUpgrade:get_UpgradeRebirthMulti+39, 0F 84 73 00 00 00)
+assert(MonumentUpgrade:get_UpgradeRebirthMulti+4A, 0F 85 62 00 00 00)
+assert(MonumentUpgrade:get_UpgradeRebirthMulti+8A, 74 26)
+assert(MonumentUpgrade:get_UpgradeRebirthMulti+C6, 74 07)
+
+MonumentUpgrade:get_UpgradeRebirthMulti+13:
+  db 6A 01
+MonumentUpgrade:get_UpgradeRebirthMulti+39:
+  db 90 90 90 90 90 90
+MonumentUpgrade:get_UpgradeRebirthMulti+4A:
+  db 90 90 90 90 90 90
+MonumentUpgrade:get_UpgradeRebirthMulti+8A:
+  db 90 90
+MonumentUpgrade:get_UpgradeRebirthMulti+C6:
+  db EB 07
+
+[DISABLE]
+MonumentUpgrade:get_UpgradeRebirthMulti+13:
+  db 6A 04
+MonumentUpgrade:get_UpgradeRebirthMulti+39:
+  db 0F 84 73 00 00 00
+MonumentUpgrade:get_UpgradeRebirthMulti+4A:
+  db 0F 85 62 00 00 00
+MonumentUpgrade:get_UpgradeRebirthMulti+8A:
+  db 74 26
+MonumentUpgrade:get_UpgradeRebirthMulti+C6:
+  db 74 07
+
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>33</ID>
+              <Description>"Divinity Generator"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>34</ID>
+                  <Description>"no cost to build"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'DivinityGenerator', 'get_RequiredCreations')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(DivinityGenerator:get_RequiredCreations+28, 68 40 42 0F 00)
+assert(DivinityGenerator:get_RequiredCreations+75, 68 90 D0 03 00)
+assert(DivinityGenerator:get_RequiredCreations+C5, 68 90 D0 03 00)
+assert(DivinityGenerator:get_RequiredCreations+115, 68 A0 86 01 00)
+
+DivinityGenerator:get_RequiredCreations+28:
+  push 00
+  nop 3
+
+DivinityGenerator:get_RequiredCreations+75:
+  push 00
+  nop 3
+
+DivinityGenerator:get_RequiredCreations+C5:
+  push 00
+  nop 3
+
+DivinityGenerator:get_RequiredCreations+115:
+  push 00
+  nop 3
+
+[DISABLE]
+DivinityGenerator:get_RequiredCreations+28:
+  db 68 40 42 0F 00
+DivinityGenerator:get_RequiredCreations+75:
+  db 68 90 D0 03 00
+DivinityGenerator:get_RequiredCreations+C5:
+  db 68 90 D0 03 00
+DivinityGenerator:get_RequiredCreations+115:
+  db 68 A0 86 01 00
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>35</ID>
+                  <Description>"instant creation (only 1 clone needed)"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'DivinityGenerator', 'DurationInMS')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(DivinityGenerator:DurationInMS+6, C7 45 F8 00 5C B2 EC)
+assert(DivinityGenerator:DurationInMS+D, C7 45 FC 22 00 00 00)
+assert(DivinityGenerator:DurationInMS+5C, 40 3D FF FF FF FF)
+
+DivinityGenerator:DurationInMS+6:
+  db C7 45 F8 01 00 00 00
+DivinityGenerator:DurationInMS+D:
+  db C7 45 FC 00 00 00 00
+
+alloc(newmem,$1000)
+label(return)
+newmem:
+  mov eax,1
+  cmp eax,FFFFFFFF
+  jmp return
+
+DivinityGenerator:DurationInMS+5C:
+  jmp newmem
+  nop
+return:
+
+[DISABLE]
+DivinityGenerator:DurationInMS+6:
+  db C7 45 F8 00 5C B2 EC
+DivinityGenerator:DurationInMS+D:
+  db C7 45 FC 22 00 00 00
+DivinityGenerator:DurationInMS+5C:
+  db 40 3D FF FF FF FF
+
+dealloc(newmem)
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>36</ID>
+                  <Description>"no stones needed to fill (not sure if it works)"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'DivinityGenerator', 'FillStoneStorage')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(DivinityGenerator:FillStoneStorage+2A, 74 10)
+assert(DivinityGenerator:FillStoneStorage+3C, 0F B6 45 10)
+
+DivinityGenerator:FillStoneStorage+2A:
+  nop 2
+DivinityGenerator:FillStoneStorage+3C:
+  db B8 00 00 00 01 90
+
+[DISABLE]
+DivinityGenerator:FillStoneStorage+2A:
+  db 74 10
+DivinityGenerator:FillStoneStorage+3C:
+  db 0F B6 45 10
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>43</ID>
+                  <Description>"instant (read: better) upgrade creation (only 1 clone needed)"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'GeneratorUpgrade', 'DurationInMS')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(GeneratorUpgrade:DurationInMS+1B, C7 45 F8 00 10 A5 D4)
+assert(GeneratorUpgrade:DurationInMS+22, C7 45 FC E8 00 00 00)
+assert(GeneratorUpgrade:DurationInMS+29, 8B 45 08 8B 40 40)
+assert(GeneratorUpgrade:DurationInMS+7A, 40 3D FF FF FF FF)
+
+GeneratorUpgrade:DurationInMS+1B:
+  mov [ebp-08],1
+GeneratorUpgrade:DurationInMS+22:
+  mov [ebp-04],0
+
+GeneratorUpgrade:DurationInMS+29:
+  mov eax,1
+  nop
+
+
+alloc(newmem,$1000)
+label(return)
+
+newmem:
+  mov eax,1
+  cmp eax,FFFFFFFF
+  jmp return
+
+GeneratorUpgrade:DurationInMS+7A:
+  jmp newmem
+  nop
+return:
+
+[DISABLE]
+GeneratorUpgrade:DurationInMS+1B:
+  db C7 45 F8 00 10 A5 D4
+GeneratorUpgrade:DurationInMS+22:
+  db C7 45 FC E8 00 00 00
+GeneratorUpgrade:DurationInMS+29:
+  db 8B 45 08 8B 40 40
+GeneratorUpgrade:DurationInMS+7A:
+  db 40 3D FF FF FF FF
+
+dealloc(newmem)
+
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>40</ID>
+              <Description>"Planet"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>27</ID>
+                  <Description>"Level up Planet Multiplier with one clone"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Planet', 'UpdateDuration')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Planet:UpdateDuration+346, 0F 84 85 00 00 00)
+
+Planet:UpdateDuration+346:
+  db 90 90 90 90 90 90
+
+[DISABLE]
+Planet:UpdateDuration+346:
+  db 0F 84 85 00 00 00
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>44</ID>
+                  <Description>"UBs (V1) - Set Revert time to 0 seconds"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'PlanetUi', 'ShowScrollViewElements')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(PlanetUi:ShowScrollViewElements+1739, 8B 4F 2C 8B 47 28 89 85)
+alloc(newmem,$1000)
+
+label(code)
+label(return)
+
+newmem:
+  mov [edi+2C],0
+  mov [edi+28],0
+
+code:
+  mov ecx,[edi+2C]
+  mov eax,[edi+28]
+  jmp return
+PlanetUi:ShowScrollViewElements+1739:
+  jmp newmem
+  nop
+return:
+
+[DISABLE]
+PlanetUi:ShowScrollViewElements+1739:
+  db 8B 4F 2C 8B 47 28 89 85
+dealloc(newmem)
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>53</ID>
+                  <Description>"UBs (V2) - no creating power check"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'UltimateBeingV2', 'UpdateDuration')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(UltimateBeingV2:UpdateDuration+184, 83 C4 10 85 C0)
+alloc(newmem,$1000)
+
+label(code)
+label(return)
+
+newmem:
+  mov eax,0
+code:
+  add esp,10
+  test eax,eax
+  jmp return
+UltimateBeingV2:UpdateDuration+184:
+  jmp newmem
+return:
+
+[DISABLE]
+UltimateBeingV2:UpdateDuration+184:
+  db 83 C4 10 85 C0
+dealloc(newmem)
+
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>41</ID>
+          <Description>"Train"</Description>
+          <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+          <LastState Value="" RealAddress="00000000"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>55</ID>
+              <Description>"Physical"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>54</ID>
+                  <Description>"all unlocked"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Training', 'get_IsAvailable')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Training:get_IsAvailable+18, 75 0A)
+
+Training:get_IsAvailable+18:
+  db 90 90
+
+[DISABLE]
+Training:get_IsAvailable+18:
+  db 75 0A
+
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>56</ID>
+              <Description>"Skill"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>58</ID>
+                  <Description>"all unlocked"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Skill', 'get_IsAvailable')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Skill:get_IsAvailable+17, 75 0A)
+
+Skill:get_IsAvailable+17:
+  db 90 90
+
+[DISABLE]
+Skill:get_IsAvailable+17:
+  db 75 0A
+
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>45</ID>
+              <Description>"Might"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>46</ID>
+                  <Description>"instant training (only 1 clone needed, all physical &amp; skills needed to unlock)"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Might', 'DurationInMS')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Might:DurationInMS+28F, 83 C4 10 8B C8)
+alloc(newmem,$1000)
+
+label(code)
+label(return)
+
+newmem:
+  mov eax,0
+code:
+  add esp,10
+  mov ecx,eax
+  jmp return
+
+Might:DurationInMS+28F:
+  jmp newmem
+return:
+
+
+[DISABLE]
+Might:DurationInMS+28F:
+  db 83 C4 10 8B C8
+
+dealloc(newmem)
+
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>59</ID>
+                  <Description>"no cooldown"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Might', 'UpdateDuration')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Might:UpdateDuration+C8, 8B 4F 30 89 4D 88)
+alloc(newmem,$1000)
+
+label(code)
+label(return)
+
+newmem:
+  mov [edi+30],0
+code:
+  mov ecx,[edi+30]
+  mov [ebp-78],ecx
+  jmp return
+
+Might:UpdateDuration+C8:
+  jmp newmem
+  nop
+return:
+
+
+[DISABLE]
+Might:UpdateDuration+C8:
+  db 8B 4F 30 89 4D 88
+
+dealloc(newmem)
+
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>42</ID>
+              <Description>"TBS"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>25</ID>
+                  <Description>"wider hit area. always hit when in hit area"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'HitGame', 'IsHit')
+    mono_compile_method(mId)
+    mId = mono_findMethod('Assembly-CSharp', 'HitGame', 'SetDifficulty')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(HitGame:IsHit+1EB, 0F 84 90 00 00 00)
+assert(HitGame:SetDifficulty+B, 8B 7D 0C C7 46 30 00 00 00 00)
+assert(HitGame:SetDifficulty+6A, 3D 03 00 00 00)
+
+alloc(newmem,$1000)
+label(return)
+
+HitGame:IsHit+1EB:
+  db 90 90 90 90 90 90
+
+newmem:
+  mov edi,[ebp+0C]
+  mov [esi+30],00000000
+  mov [esi+20],0
+  mov eax,[esi+14]
+  mov [esi+24],eax
+  jmp return
+
+HitGame:SetDifficulty+B:
+  jmp newmem
+  nop 5
+
+HitGame:SetDifficulty+6A:
+return:
+
+[DISABLE]
+HitGame:IsHit+1EB:
+  db 0F 84 90 00 00 00
+HitGame:SetDifficulty+B:
+  db 8B 7D 0C C7 46 30 00 00 00 00
+
+dealloc(newmem)
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>47</ID>
+          <Description>"Fight"</Description>
+          <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+          <LastState Value="" RealAddress="00000000"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>48</ID>
+              <Description>"SpaceDim"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>49</ID>
+                  <Description>"instant level up (only 1 light clone needed)"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'SpaceDimElement', 'UpdateDuration')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(SpaceDimElement:UpdateDuration+49F, 0F 84 25 01 00 00)
+SpaceDimElement:UpdateDuration+49F:
+  db 90 90 90 90 90 90
+
+
+[DISABLE]
+SpaceDimElement:UpdateDuration+49F:
+  db 0F 84 25 01 00 00
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>50</ID>
+          <Description>"Pets"</Description>
+          <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+          <LastState Value="" Activated="1" RealAddress="00000000"/>
+          <GroupHeader>1</GroupHeader>
+          <CheatEntries>
+            <CheatEntry>
+              <ID>51</ID>
+              <Description>"Campaings"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" Activated="1" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>52</ID>
+                  <Description>"campain duration = 0 (set before campain start)"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'PetCampaign', 'Start')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(PetCampaign:Start+A8, 89 47 0C 83 EC 0C)
+alloc(newmem,$1000)
+
+label(code)
+label(return)
+
+newmem:
+  mov eax,[edi+10]
+code:
+  mov [edi+0C],eax
+  sub esp,0C
+  jmp return
+
+PetCampaign:Start+A8:
+  jmp newmem
+  nop
+return:
+
+
+[DISABLE]
+PetCampaign:Start+A8:
+  db 89 47 0C 83 EC 0C
+dealloc(newmem)
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>62</ID>
+              <Description>"Dungeons"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" Activated="1" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>63</ID>
+                  <Description>"always show finish buttons"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'PetDungeonUi', 'ShowDungeonList')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(PetDungeonUi:ShowDungeonList+F4, 51)
+
+PetDungeonUi:ShowDungeonList+F4:
+  db 50
+
+
+[DISABLE]
+PetDungeonUi:ShowDungeonList+F4:
+  db 51
+</AssemblerScript>
+                </CheatEntry>
+                <CheatEntry>
+                  <ID>64</ID>
+                  <Description>"allow finish without full time spend in dungeon"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Dungeon', 'CalculateResult')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Dungeon:CalculateResult+4A2, 51)
+
+Dungeon:CalculateResult+4A2:
+  db 50
+
+
+[DISABLE]
+Dungeon:CalculateResult+4A2:
+  db 51
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+            <CheatEntry>
+              <ID>65</ID>
+              <Description>"Crafting"</Description>
+              <Options moManualExpandCollapse="1" moActivateChildrenAsWell="1" moDeactivateChildrenAsWell="1" moAllowManualCollapseAndExpand="1"/>
+              <LastState Value="" Activated="1" RealAddress="00000000"/>
+              <GroupHeader>1</GroupHeader>
+              <CheatEntries>
+                <CheatEntry>
+                  <ID>66</ID>
+                  <Description>"instant finish"</Description>
+                  <LastState/>
+                  <VariableType>Auto Assembler Script</VariableType>
+                  <AssemblerScript>[ENABLE]
+{$lua}
+if syntaxcheck then return end
+if LaunchMonoDataCollector() ~= 0 then
+    local mId = mono_findMethod('Assembly-CSharp', 'Crafting', 'UpdateDuration')
+    mono_compile_method(mId)
+end
+{$asm}
+assert(Crafting:UpdateDuration+87, 8B 4B 24 83 EC 08)
+alloc(newmem,$1000)
+
+label(return)
+
+newmem:
+  mov ecx,[ebx+24]
+  mov [ebx+0C],ecx
+  sub esp,08
+  jmp return
+
+Crafting:UpdateDuration+87:
+  jmp newmem
+  nop
+return:
+
+
+[DISABLE]
+Crafting:UpdateDuration+87:
+  db 8B 4B 24 83 EC 08
+dealloc(newmem)
+</AssemblerScript>
+                </CheatEntry>
+              </CheatEntries>
+            </CheatEntry>
+          </CheatEntries>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
